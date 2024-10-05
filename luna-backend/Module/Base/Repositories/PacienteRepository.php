@@ -117,10 +117,10 @@ class PacienteRepository implements PacienteRepositoryInterface
             }
 
         } catch (\Exception $e) {
-            return 0;  
+            return 0;
         }
 
-        return 1;  
+        return 1;
     }
 
     public function pdoConsultaSimple($request)
@@ -130,18 +130,18 @@ class PacienteRepository implements PacienteRepositoryInterface
 
         $rs = Paciente::query();
 
-        if ($criterio == 1) 
+        if ($criterio == 1)
         {
             $rs->where('pac_cedula', $parametro);
-        } 
-        if ($criterio == 2) 
+        }
+        if ($criterio == 2)
         {
             $rs->where('pac_nombre', 'like', '%' . strtoupper($parametro) . '%');
-        } 
-        if ($criterio == 3) 
+        }
+        if ($criterio == 3)
         {
             $rs->where('pac_telefono', 'like', '%' . $parametro . '%');
-        } 
+        }
 
         return $rs->get();
 
@@ -166,7 +166,7 @@ class PacienteRepository implements PacienteRepositoryInterface
             DB::commit();
 
         } catch (\Exception $e) {
-            return 0;  
+            return 0;
         }
 
         return 1;
@@ -178,7 +178,6 @@ class PacienteRepository implements PacienteRepositoryInterface
             ->join('tratamiento as c', 'c.tra_id', '=', 'a.tra_id')
             ->select('c.tra_nombre','c.tra_id', 'a.fec_inicio', 'a.fec_fin', 'a.estado')
             ->where('a.pac_id', $pac_id)
-            ->where('a.estado', '1')
             ->get();
 
         return $tratamientos;
