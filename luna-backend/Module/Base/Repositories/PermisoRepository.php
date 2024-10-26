@@ -65,7 +65,7 @@ class PermisoRepository implements PermisoRepositoryInterface
             return 0;
         }
 
-        return $permiso->per_id;
+        return $permiso->perm_id;
     }
 
     

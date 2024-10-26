@@ -265,11 +265,11 @@
                 if (permiso) 
                 {
                   componente.marcado = true;
-                  componente.per_id = permiso.per_id; 
+                  componente.perm_id = permiso.perm_id; 
                 } else 
                 {
                   componente.marcado = false;
-                  componente.per_id = null; 
+                  componente.perm_id = null; 
                 }
             });
 
@@ -293,7 +293,7 @@
           if (res.data != 0)
           {
             console.log(componente.marcado);
-            componente.per_id = res.data;
+            componente.perm_id = res.data;
             componente.marcado = true;
           }
         })
@@ -301,7 +301,7 @@
       {
         console.log(componente.marcado);
         
-        const id = componente.per_id;
+        const id = componente.perm_id;
         await authApi.delete(`api/base/permiso/${id}`);
         componente.marcado = false;
       }
