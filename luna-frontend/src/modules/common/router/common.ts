@@ -38,6 +38,11 @@ const commonRoutes: Array<RouteRecordRaw> =
         path: '/common/conspac',
         component: () =>import('@/modules/common/views/Consulta/AsignTra.vue')
     },
+    {
+        name: 'common.acceso',
+        path: '/common/acceso',
+        component: () =>import('@/modules/common/views/Acceso.vue')
+    }
     
 ];
 

@@ -235,7 +235,7 @@
                               readonly
                               density="compact"
                               variant="underlined"
-                              :rules="nRules"
+                              :rules="dateRules"
                               v-bind="props">
                               </v-text-field>
                               </template>
@@ -399,6 +399,19 @@ import { log } from 'console';
         (m: string | null): boolean | string => !!m || 'Seleccione un criterio'
     ];
 
+    const dateRules = 
+    [
+        (v: string): boolean | string => !!v || 'Requerido',
+        (v: string): boolean | string => 
+        {
+            if (v === fechaFin.value && new Date(v) < new Date(fechaInicio.value)) 
+            {
+                return 'Rango no valido';
+            }
+            return true;
+        }
+    ];
+
     onMounted(() => 
     {
         getTratamiento();
@@ -413,6 +426,19 @@ import { log } from 'console';
             fechaInicio.value = formatDate(val);
         }
     });
+
+    watch(date2, (val) => {
+    if (val) {
+        // Validamos que la fecha fin no sea menor que la fecha inicio
+        if (new Date(val) < new Date(fechaInicio.value)) {
+            
+            date2.value = new Date(fechaInicio.value);
+            fechaFin.value = fechaInicio.value;
+            return;
+        }
+        fechaFin.value = formatDate(val);
+    }
+});
 
     const formatDate = (newDate: Date) => 
     {
@@ -489,6 +515,10 @@ import { log } from 'console';
 
         if(isValid.valid)
         {
+            if (new Date(fechaFin.value) < new Date(fechaInicio.value)) 
+            {
+                return;
+            }
             const params = {paciente:paciente.value,tratamiento:seltratamiento.value,fechaInicio: fechaInicio.value, fechaFin:fechaFin.value};
             await authApi.post('api/base/process/asignarTratamiento',params).then(res =>
             {

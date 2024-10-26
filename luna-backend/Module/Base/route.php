@@ -60,7 +60,7 @@ Route::prefix('base')->middleware(['auth:sanctum'])->group(function ()
         Route::get('paciente/{id}', [PacienteController::class, 'paciente']);
         Route::get('obtenerTratamientos/{pac_id}', [PacienteController::class, 'obtenerTratamientos']);
         Route::get('pacientev/{id}', [PacienteController::class, 'pacientev']);
-        Route::get('obtenerPermisos', [PermisoController::class, 'obtenerPermisos']);
+        Route::post('obtenerPermisos', [PermisoController::class, 'obtenerPermisos']);
         Route::post('permisoComponente', [PermisoController::class, 'permisoComponente']);
 
     });

@@ -4,10 +4,10 @@
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-app-bar-title>{{ userAuth.empresa.emp_nombre }}</v-app-bar-title>
       <v-spacer />
-      <v-btn icon><v-icon>mdi-newspaper-plus</v-icon></v-btn>
-      <v-btn icon><v-icon>mdi-magnify</v-icon></v-btn>
+      <v-btn @click="goToCita()" icon><v-icon>mdi-newspaper-plus</v-icon></v-btn>
+      <v-btn @click="goToConsulta()" icon><v-icon>mdi-magnify</v-icon></v-btn>
       <v-btn icon><v-icon>mdi-file-search-outline</v-icon></v-btn>
-      <v-btn icon><v-icon>mdi-apps</v-icon></v-btn>
+      <v-btn @click="goToDashboard()" icon><v-icon>mdi-apps</v-icon></v-btn>
       <v-list bg-color="blue-darken-2" class="py-1 d-none d-sm-flex" nav rounded="xs">
         <v-list-item :prepend-avatar="imageSrc" :subtitle="userAuth.user.rol.rol_nombre" :title="userAuth.user.usu_nombre"></v-list-item>
       </v-list>
@@ -119,6 +119,20 @@ onMounted(async () => {
   await getMenu();
 });
 
+const goToCita = () => 
+{
+  router.push({ name: 'cita.create'})
+}
+
+const goToConsulta = () => 
+{
+  router.push({ name: 'common.consultaPaciente'})
+}
+
+const goToDashboard = () => 
+{
+  router.push('/dashboard');
+}
 
 // Funciones de Usuario
 const getMenu = async () => {
