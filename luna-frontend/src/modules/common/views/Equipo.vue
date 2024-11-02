@@ -367,6 +367,8 @@
   };
   
   const updateMantenimiento = async () => {
+    console.log(mantId.value);
+    console.log(formMant.value);
     await authApi.put(`api/base/mantenimiento/${mantId.value}`, formMant.value);
     fetchMantenimientos();
   };

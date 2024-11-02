@@ -41,28 +41,39 @@ class MantenimientoRepository implements MantenimientoRepositoryInterface
         }
         }
 
-        // Actualizar un mantenimiento existente
-        public function pdoUpdate($id, $request)
+        public function pdoUpdate($request, $id)
         {
-        $mantenimiento = $this->model->find($id);
+            \DB::beginTransaction();
+            try
+            {
+                // Buscar el mantenimiento por ID
+                $mantenimiento = $this->model->find($id);
 
-        if (!$mantenimiento) {
-            return null; // O lanzar una excepción si prefieres
+                if (!$mantenimiento) {
+                    // Registra el error si no se encuentra el mantenimiento
+                    \Log::error('Mantenimiento no encontrado con ID: ' . $id);
+                    return 0; // O puedes lanzar una excepción
+                }
+
+                // Actualizar los campos del mantenimiento
+                $mantenimiento->mant_fecha = $request->mant_fecha ?? $mantenimiento->mant_fecha;
+                $mantenimiento->mant_equi_id = $request->mant_equi_id ?? $mantenimiento->mant_equi_id;
+                $mantenimiento->mant_detalle = $request->mant_detalle ?? $mantenimiento->mant_detalle;
+
+                // Guardar los cambios
+                $mantenimiento->save();
+
+                \DB::commit();
+                return 1; // Retorna 1 si la actualización fue exitosa
+
+            } catch (\Exception $e) {
+                \DB::rollback();
+                // Manejo de errores
+                \Log::error('Error al actualizar mantenimiento: ' . $e->getMessage());
+                return 0; // Retorna 0 si hubo un error
+            }
         }
 
-        try {
-            $mantenimiento->update([
-                'mant_fecha' => $request->mant_fecha,
-                'mant_equi_id' => $request->mant_equi_id,
-                'mant_detalle' => $request->mant_detalle,
-            ]);
-            return $mantenimiento;
-        } catch (\Exception $e) {
-            // Manejo de errores: puedes registrar el error o lanzar una excepción
-            \Log::error('Error al actualizar mantenimiento: ' . $e->getMessage());
-            return null;
-        }
-        }
 
 
     // Eliminar un mantenimiento
