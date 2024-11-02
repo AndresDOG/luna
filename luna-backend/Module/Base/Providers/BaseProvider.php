@@ -15,6 +15,8 @@ use Module\Base\Repositories\ComponenteRepository;
 use Module\Base\Repositories\EspecialidadRepository;
 use Module\Base\Repositories\TratamientoRepository;
 use Module\Base\Repositories\PacienteRepository;
+use Module\Base\Repositories\EquipoRepository;
+use Module\Base\Repositories\MantenimientoRepository;
 
 use Module\Base\Repositories\Interfaces\InfoRepositoryInterface;
 use Module\Base\Repositories\Interfaces\PermisoRepositoryInterface;
@@ -26,6 +28,8 @@ use Module\Base\Repositories\Interfaces\ComponenteRepositoryInterface;
 use Module\Base\Repositories\Interfaces\EspecialidadRepositoryInterface;
 use Module\Base\Repositories\Interfaces\TratamientoRepositoryInterface;
 use Module\Base\Repositories\Interfaces\PacienteRepositoryInterface;
+use Module\Base\Repositories\Interfaces\EquipoRepositoryInterface;
+use Module\Base\Repositories\Interfaces\MantenimientoRepositoryInterface;
 
 
 # Services
@@ -39,7 +43,8 @@ use Module\Base\Services\ComponenteService;
 use Module\Base\Services\EspecialidadService;
 use Module\Base\Services\TratamientoService;
 use Module\Base\Services\PacienteService;
-
+use Module\Base\Services\EquipoService;
+use Module\Base\Services\MantenimientoService;
 
 use Module\Base\Services\Interfaces\InfoServiceInterface;
 use Module\Base\Services\Interfaces\PermisoServiceInterface;
@@ -51,7 +56,8 @@ use Module\Base\Services\Interfaces\ComponenteServiceInterface;
 use Module\Base\Services\Interfaces\EspecialidadServiceInterface;
 use Module\Base\Services\Interfaces\TratamientoServiceInterface;
 use Module\Base\Services\Interfaces\PacienteServiceInterface;
-
+use Module\Base\Services\Interfaces\EquipoServiceInterface;
+use Module\Base\Services\Interfaces\MantenimientoServiceInterface;
 
 class BaseProvider extends ServiceProvider
 {
@@ -73,6 +79,8 @@ class BaseProvider extends ServiceProvider
         $this->app->bind(EspecialidadRepositoryInterface::class,EspecialidadRepository::class);
         $this->app->bind(TratamientoRepositoryInterface::class,TratamientoRepository::class);
         $this->app->bind(PacienteRepositoryInterface::class,PacienteRepository::class);
+        $this->app->bind(EquipoRepositoryInterface::class,EquipoRepository::class);
+        $this->app->bind(MantenimientoRepositoryInterface::class,MantenimientoRepository::class);
 
 
         # Services
@@ -86,6 +94,8 @@ class BaseProvider extends ServiceProvider
         $this->app->bind(EspecialidadServiceInterface::class,EspecialidadService::class);
         $this->app->bind(TratamientoServiceInterface::class,TratamientoService::class);
         $this->app->bind(PacienteServiceInterface::class,PacienteService::class);
+        $this->app->bind(EquipoServiceInterface::class,EquipoService::class);
+        $this->app->bind(MantenimientoServiceInterface::class,MantenimientoService::class);
 
 
 

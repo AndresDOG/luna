@@ -11,6 +11,8 @@ use Module\Base\Controllers\ComponenteController;
 use Module\Base\Controllers\EspecialidadController;
 use Module\Base\Controllers\TratamientoController;
 use Module\Base\Controllers\PacienteController;
+use Module\Base\Controllers\EquipoController;
+use Module\Base\Controllers\MantenimientoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +34,8 @@ Route::prefix('base')->middleware(['auth:sanctum'])->group(function ()
         'especialidad' => EspecialidadController::class,
         'tratamiento' => TratamientoController::class,
         'paciente' => PacienteController::class,
+        'equipo' => EquipoController::class,
+        'mantenimiento' => MantenimientoController::class,
 
       /*
         'empresa' => EmpresaController::Class,

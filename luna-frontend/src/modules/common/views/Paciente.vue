@@ -91,6 +91,11 @@
                         <template v-slot:item.pac_nombre="{ item }">
                             <span class="text-blue-grey-darken-1"> {{ item.pac_nombre }}</span>
                         </template>
+                        <template v-slot:item.pac_fecha_nacimiento="{ item }">
+                            <div >
+                              <v-chip syze="small" variant="outlined" color="info" dark>{{ item.pac_fecha_nacimiento }}</v-chip>
+                            </div>
+                        </template>
                         <template v-slot:item.pac_telefono="{ item }">
                             <span class="text-blue-grey-darken-1"> {{ item.pac_telefono }}</span>
                         </template>
@@ -168,7 +173,28 @@
                 variant="underlined"
                 :rules="nRules">
             </v-select>
-
+            <v-menu class="mb-3"
+            v-model="menu"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px">
+            <template v-slot:activator="{ props }">
+                <v-text-field
+                v-model="addPaciente.fechaNacimiento"
+                label="Fecha Nacimiento"
+                persistent-hint
+                prepend-icon="mdi-calendar"
+                readonly
+                density="compact"
+                variant="underlined"
+                :rules="nRules"
+                v-bind="props">
+                </v-text-field>
+                </template>
+            <v-date-picker color="primary" header-color="primary" width="300" height="470" elevation="5" v-model="date1"  no-title @update:model-value="formatDate"></v-date-picker>
+            </v-menu>
             <v-text-field class="mb-3" label="Identidad" v-model="addPaciente.cedula" required density="compact" variant="underlined" :rules="nRules" maxlength="40"></v-text-field>
             <v-text-field class="mb-3" label="Nombre" v-model="addPaciente.nombre" required density="compact" variant="underlined" :rules="nRules" maxlength="150"></v-text-field>
             <v-text-field class="mb-3" label="Dirección" v-model="addPaciente.direccion" required density="compact" variant="underlined" :rules="nRules" maxlength="255"></v-text-field>
@@ -303,7 +329,7 @@
 </template>
 <script setup lang="ts">
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted,watch} from 'vue';
 import { AuthStore } from '@/modules/common/stores/auth';
 import type { rsItems } from '@/modules/common/types/contactoInterface';
 import type { AuthStoreState } from '@/modules/common/types/index';
@@ -313,12 +339,12 @@ import type { Header } from '@/modules/common/types/index';
 
 // Variables globales
 const pacientes = ref([]);
-const paciente = ref({id:0, tipo_contacto: '', tipo_identidad:'',cedula:'', nombre:' ', direccion:' ',telefono:'',departamento:'',localidad:'', namelocalidad:'', mail:'',tratamiento:''})
+const paciente = ref({id:0, tipo_contacto: '', tipo_identidad:'',cedula:'', nombre:' ', direccion:' ',telefono:'',departamento:'',localidad:'', namelocalidad:'', mail:'',tratamiento:'',fechaNacimiento:new Date().toISOString().split('T')[0]})
 const items = ref<rsItems>({identidad:[],departamento:[],localidad:[]});
-
+const fechaNacimiento = ref(new Date().toISOString().split('T')[0]);
 
 const newPaciente = ref<boolean>(false);
-const addPaciente = ref({tipo_contacto: '', tipo_identidad:'', cedula:'', nombre:'', direccion:'', telefono:'', departamento:'', localidad:'', mail:'', tratamiento:''});
+const addPaciente = ref({tipo_contacto: '', tipo_identidad:'', cedula:'', nombre:'', direccion:'', telefono:'', departamento:'', localidad:'', mail:'', tratamiento:'', fechaNacimiento:new Date().toISOString().split('T')[0]});
 const tipoContact = ref([{title: 'Paciente', value:1},{title: 'Proveedor', value:2},{title: 'Ambos', value:3}]);
 
 const EditClient = ref<boolean>(false);
@@ -333,6 +359,10 @@ const access_cpaciente = ref<boolean>(false);
 const access_epaciente = ref<boolean>(false);
 const access_dpaciente = ref<boolean>(false);
 
+// Datapicker
+const date1 = ref(new Date());
+const menu = ref<boolean>(false);
+
 // Datatable
 const searchclient = ref<string>('');
 const headers:(Header)[] = 
@@ -341,6 +371,7 @@ const headers:(Header)[] =
     { title: 'TIPO DOC',key: 'tipo_identidad.tip_ide_codigo', sortable: false},
     { title: 'IDENTIFICACION',key: 'pac_cedula', sortable: false},
     { title: 'NOMBRE',key: 'pac_nombre', sortable: false},
+    { title: 'NACIMIENTO',key: 'pac_fecha_nacimiento', sortable: false},
     //{ title: 'DIRECCION', key: 'pac_direccion',sortable: false },
     { title: 'TELEFONO', key: 'pac_telefono',sortable: false },
     { title: 'MAIL', key: 'pac_email',sortable: false },
@@ -360,11 +391,20 @@ onMounted(async () =>
     await controlPermiso();
 });
 
+// Watcher Para Fechas
+watch(date1, (val) => 
+    {
+        if (val) 
+        {
+            addPaciente.value.fechaNacimiento = formatDate(val);
+        }
+    });
+
 // Eventos
 const cerrarDialogCrearPaciente = () =>
 {
     newPaciente.value = false;
-    addPaciente.value = {tipo_contacto: '', tipo_identidad:'', cedula:'', nombre:'', direccion:'', telefono:'', departamento:'', localidad:'', mail:'',tratamiento:''}
+    addPaciente.value = {tipo_contacto: '', tipo_identidad:'', cedula:'', nombre:'', direccion:'', telefono:'', departamento:'', localidad:'', mail:'',tratamiento:'',fechaNacimiento:new Date().toISOString().split('T')[0]}
 }
 
 // Methods
@@ -383,6 +423,14 @@ const getSearchPaciente = async () =>
     })
 
 };
+
+const formatDate = (newDate: Date) => 
+{
+    const year = newDate.getFullYear()
+    const month = String(newDate.getMonth() + 1).padStart(2, '0')
+    const day = String(newDate.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+}
 
 const getModPacienteIdentidad = async () =>
 {

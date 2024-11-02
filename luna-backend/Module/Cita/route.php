@@ -32,5 +32,6 @@ Route::prefix('cita')->middleware(['auth:sanctum'])->group(function ()
     Route::prefix('search')->group(function ()
     {
         Route::get('cita/{id}', [CitaController::Class, 'cita']);
+        Route::get('obtenerCitaPaciente/{id}', [CitaController::class, 'obtenerCitaPaciente']);
     });
 });

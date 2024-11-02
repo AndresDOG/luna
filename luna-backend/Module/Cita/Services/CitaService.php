@@ -28,4 +28,9 @@ class CitaService implements CitaServiceInterface
     {
         return $this->repository->pdoCitasAsig($request);
     } 
+
+    public function getCitaPaci($id)
+    {
+        return $this->repository->pdoCitaPaci($id);
+    }
 }    

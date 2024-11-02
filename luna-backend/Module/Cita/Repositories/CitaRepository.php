@@ -90,4 +90,26 @@ class CitaRepository implements CitaRepositoryInterface
         return response()->json($resultados);
     }
 
+    public function pdoCitaPaci($id)
+    {
+         $citas = DB::table('cita as A')
+            ->select(
+                'A.cit_no_cita',
+                'D.tip_cita_nombre',
+                'A.cita_fecha',
+                'B.med_nombre',
+                'C.pac_nombre',
+                'E.estado_nombre'
+            )
+            ->join('medico as B', 'B.med_id', '=', 'A.cita_medico_id')
+            ->join('paciente as C', 'C.pac_id', '=', 'A.cita_paciente_id')
+            ->join('tipo_cita as D', 'D.tip_cita_id', '=', 'A.cita_id_tipo_cita')
+            ->join('estado_cita as E', 'E.estado_id', '=', 'A.estado_id')
+            ->where('A.cita_paciente_id', '=', $id) // Filtro por paciente
+            ->orderBy('A.cita_fecha')
+            ->get();
+
+        return response()->json($citas);
+    }
+
 }

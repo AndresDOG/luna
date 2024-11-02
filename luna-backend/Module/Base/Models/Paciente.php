@@ -14,7 +14,7 @@ class Paciente extends Model
     protected $primaryKey = 'pac_id';
 
     protected $fillable = [
-        'pac_tipo_contacto','pac_id_tipo_identidad','pac_cedula','pac_nombre','pac_direccion','pac_telefono','pac_email','pac_id_localidad','pac_id_tratamiento','pac_estado'
+        'pac_tipo_contacto','pac_id_tipo_identidad','pac_cedula','pac_nombre','pac_fecha_nacimiento','pac_direccion','pac_telefono','pac_email','pac_id_localidad','pac_id_tratamiento','pac_estado'
     ];
 
     public function tipo_identidad()

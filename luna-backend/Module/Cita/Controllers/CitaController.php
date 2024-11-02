@@ -29,4 +29,9 @@ class CitaController extends Controller
     {
         return $this->service->getCitasAsig($request);
     } 
+
+    public function obtenerCitaPaciente($id)
+    {
+        return $this->service->getCitaPaci($id);
+    }
 }

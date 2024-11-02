@@ -67,11 +67,11 @@ class PacienteRepository implements PacienteRepositoryInterface
                 'pac_id_tipo_identidad' => $request->keys['tipo_identidad'],
                 'pac_tipo_contacto' => $request->keys['tipo_contacto']-1,
                 'pac_cedula' => $request->keys['cedula'],
+                'pac_fecha_nacimiento' => $request->keys['fechaNacimiento'],
                 'pac_nombre' => \Str::upper($request->keys['nombre']),
                 'pac_direccion' => \Str::upper($request->keys['direccion']),
                 'pac_telefono' => $request->keys['telefono'],
                 'pac_id_localidad' => $request->keys['localidad'],
-                'pac_id_tratamiento' => $request->keys['tratamiento'],
                 'pac_email' => $request->keys['mail'],
                 'pac_estado' => 1]);
 
