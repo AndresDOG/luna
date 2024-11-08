@@ -68,6 +68,7 @@ export interface rsInfo
     cedulaMedico:string;
     detalle:string;
     sintoma:string;
+    lugar:string;
 }
 
 export interface rsListPaciente

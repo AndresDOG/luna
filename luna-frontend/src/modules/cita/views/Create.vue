@@ -192,10 +192,6 @@
                     
                       </v-row>
                       <v-text-field v-model="keys.detalle" label="Detalle"  required :rules="nRules" maxlength="250" variant="underlined" density="compact"></v-text-field>
-                      <v-text-field v-model="keys.sintoma" label="Sintomas" maxlength="250" variant="underlined" density="compact"></v-text-field>
-                      <v-text-field v-model="keys.observacion" label="Observación" variant="underlined" density="compact"></v-text-field>
-
-                      
                   </div>
               </v-form>
               <v-card-actions>
@@ -399,7 +395,7 @@
   const access_c_customer = ref<boolean>(false);
 
       // Report
-  const info = ref<rsInfo>({ noCita:'', fechaCreacion:'', fechaEstado:'',tipo:'',medico:'',id_estado:'', estado:'', paciente:'', idPaciente:'', cedula:'', direccion:'', mail:'', telefono:'', localidad:'', observacion:'',cedulaMedico:'',detalle:'',sintoma:''});
+  const info = ref<rsInfo>({ noCita:'', fechaCreacion:'', fechaEstado:'',tipo:'',medico:'',id_estado:'', estado:'', paciente:'', idPaciente:'', cedula:'', direccion:'', mail:'', telefono:'', localidad:'',lugar:'', observacion:'',cedulaMedico:'',detalle:'',sintoma:''});
       // Datapicker
   const date1 = ref(new Date());
   const date2 = ref(new Date());

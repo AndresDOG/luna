@@ -200,7 +200,7 @@
                 :rules="nRules"
                 >
             </v-autocomplete>
-            <v-text-field class="mb-3" density="compact" variant="underlined" label="E-mail" v-model="addMedico.mail" maxlength="255"></v-text-field>
+            <v-text-field class="mb-3" density="compact" variant="underlined" label="E-mail" :rules="emailRules" v-model="addMedico.mail" maxlength="255"></v-text-field>
             </v-form>
 
         </v-card-text>
@@ -372,6 +372,13 @@ let nRules =
 (v: string): boolean | string => !!v || 'Requerido'
 ];
 
+const emailRules = [
+  (v: string) => !!v || 'El email es requerido',
+  (v: string) => {
+    const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
+    return pattern.test(v) || 'Ingrese un email válido'
+  }
+]
 onMounted(async () => 
 {
     await controlPermiso();

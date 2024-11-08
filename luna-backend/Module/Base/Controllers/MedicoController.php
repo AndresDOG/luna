@@ -14,9 +14,9 @@ class MedicoController extends Controller
         $this->service = $service;
     }
 
-    public function show($tipo)
+    public function index()
     {
-        return $this->service->getAll($tipo);
+        return $this->service->getAll();
     }
 
     public function medico($id)

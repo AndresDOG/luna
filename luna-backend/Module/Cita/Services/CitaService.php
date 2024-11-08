@@ -33,4 +33,9 @@ class CitaService implements CitaServiceInterface
     {
         return $this->repository->pdoCitaPaci($id);
     }
+
+    public function setCambiarEstado($request)
+    {
+        return $this->repository->pdoCambiarEstado($request);
+    }
 }    

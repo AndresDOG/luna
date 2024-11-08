@@ -34,4 +34,9 @@ class CitaController extends Controller
     {
         return $this->service->getCitaPaci($id);
     }
+
+    public function cambiarEstado(Request $request)
+    {
+        return $this->service->setCambiarEstado($request);
+    }
 }

@@ -94,7 +94,7 @@
                       color="cyan" 
                       v-bind="props" 
                       icon="mdi-eye"
-                      @click="$router.push({ name: 'service.view', params: { idservice: item.ser_id } })">
+                      @click="goToServiceView(item.cita_id.toString())">
                     </v-icon>
                   </template>
                 </v-tooltip>
@@ -144,6 +144,9 @@
   import { ref, computed , onMounted } from 'vue';
   import authApi from '@/api/api';
   import type { KpiEstados, Header} from '@/modules/common/types/index';
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
   
   // --------------------------------
   // - Control Acceso
@@ -185,6 +188,12 @@
       //  getKpiEstado();
         getservicioAsignado();
     });
+  // Ir a cita
+    const goToServiceView = (id: any) => 
+    {
+      console.log(id);
+      router.push({ name: 'cita.view', params: { id_cita: id } });     
+    };
 
   // --------------------------------
   // - Funciones de Usuario

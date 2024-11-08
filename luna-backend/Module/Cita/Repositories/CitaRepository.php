@@ -3,6 +3,7 @@ namespace Module\Cita\Repositories;
 use Illuminate\Support\Facades\DB;
 use Module\Cita\Repositories\Interfaces\CitaRepositoryInterface;
 use Module\Cita\Models\Cita;
+use Module\Cita\Models\Nota;
 use Module\Base\Models\Numeracion;
 
 
@@ -47,7 +48,7 @@ class CitaRepository implements CitaRepositoryInterface
 
     public function pdoCita($id)
     {
-        return $this->model->with(['paciente','tipoCita', 'medico'])->find($id);
+        return $this->model->with(['paciente','tipoCita', 'medico','estado_cita'])->find($id);
     }
 
     public function pdoCitasAsig($request)
@@ -59,6 +60,7 @@ class CitaRepository implements CitaRepositoryInterface
         // Consulta base
         $citas = DB::table('cita as A')
             ->select(
+                'A.cita_id',
                 'A.cit_no_cita',
                 'D.tip_cita_nombre',
                 'A.cita_fecha',
@@ -110,6 +112,29 @@ class CitaRepository implements CitaRepositoryInterface
             ->get();
 
         return response()->json($citas);
+    }
+
+    public function pdoCambiarEstado($request)
+    {
+        \DB::beginTransaction();
+        try {
+            $cita = $this->model->find($request->id_cita);
+            $cita->estado_id = $request->id_estado;
+            $cita->save();
+
+            $nota = new Nota();
+            $nota->not_id_cita = $request->id_cita;
+            $nota->not_id_usuario  = \Auth::user()->usu_id;
+            $nota->not_detalle = 'Cita pasa al estado: ' . $request->estado;
+            $nota->save();
+
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return 0;
+        }
+
+        return 1;
     }
 
 }

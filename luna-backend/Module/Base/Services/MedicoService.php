@@ -14,9 +14,9 @@ class MedicoService implements MedicoServiceInterface
         $this->repository = $repository;
     }
 
-    public function getAll($tipo)
+    public function getAll()
     {
-        return $this->repository->pdoAll($tipo);
+        return $this->repository->pdoAll();
     }
 
     public function getOnly($id)

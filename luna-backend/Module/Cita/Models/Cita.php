@@ -28,4 +28,9 @@ class Cita extends Model
     {
         return $this->hasOne(Medico::Class,'med_id','cita_medico_id');
     }
+
+     public function estado_cita()
+    {
+        return $this->hasOne(Estado_Cita::Class,'estado_id','estado_id');
+    }
 }

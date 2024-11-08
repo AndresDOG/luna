@@ -7,5 +7,6 @@ interface CitaServiceInterface
 	public function store($request);
     public function getCita($id);
     public function getCitasAsig($request);
+    public function setCambiarEstado($request);
     public function getCitaPaci($id);
 }

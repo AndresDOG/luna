@@ -4,7 +4,7 @@ namespace Module\Base\Services\Interfaces;
 
 interface MedicoServiceInterface
 {
-	public function getAll($tipo);
+	public function getAll();
 	public function getOnly($id);
 	public function getSome($id);
 	public function getFilter($request);

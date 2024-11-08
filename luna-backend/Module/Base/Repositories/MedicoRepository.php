@@ -13,12 +13,9 @@ class MedicoRepository implements MedicoRepositoryInterface
         $this->model = $model;
     }
 
-    public function pdoAll($tipo)
+    public function pdoAll()
     {
-        return $this->model->with(['tipo_identidad','localidad'])
-                           ->where('med_tipo_contacto', $tipo)
-                           ->where('med_estado', 1)  // Condición para estado activo
-                           ->get();
+        return $this->model->where('med_estado', 1) ->get();  // Condición para estado activo
     }
 
     public function pdoOnly($id)

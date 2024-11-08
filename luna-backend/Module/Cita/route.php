@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Module\Cita\Controllers\CitaController;
 use Module\Cita\Controllers\ListaController;
+use Module\Cita\Controllers\NotaController;
+use Module\Cita\Controllers\EstadoCitaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,11 +19,14 @@ Route::prefix('cita')->middleware(['auth:sanctum'])->group(function ()
 {
     Route::resources([
         'cita' => CitaController::class,
+        'nota' => NotaController::class,
+        'estadoCita' => EstadoCitaController::class,
     ]);
 
     Route::prefix('process')->group(function ()
     {
         Route::get('obtenerCitasAsign', [CitaController::class, 'obtenerCitasAsign']);
+        Route::post('cambiarEstado', [CitaController::class, 'cambiarEstado']);
     });
 
     Route::prefix('info')->group(function ()

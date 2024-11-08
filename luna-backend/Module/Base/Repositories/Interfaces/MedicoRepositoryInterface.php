@@ -4,7 +4,7 @@ namespace Module\Base\Repositories\Interfaces;
 
 interface MedicoRepositoryInterface
 {
-	public function pdoAll($tipo);
+	public function pdoAll();
 	public function pdoOnly($id);
 	public function pdoSome($id);
 	public function pdoFilter($request);
