@@ -374,13 +374,17 @@
   import authApi from '@/api/api';
   import Swal from 'sweetalert2';
   import type { Header } from '@/modules/common/types/index';
+  import { CitaStore } from '@/modules/cita/stores/index';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   import type { TDocumentDefinitions } from 'pdfmake/interfaces';
   import Paciente from '@/modules/common/views/Paciente.vue';
   import { VTimePicker } from 'vuetify/labs/VTimePicker';
+  import citaRoutes from '../router';
   // Generador de reportes
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  const useCitaStore = CitaStore();
+  
 
   // Global Varying
   const items = ref<rsItem>({tipocita:[], identidad:[],departamento:[],localidad:[],tratamiento:[]});
@@ -635,6 +639,7 @@
     ButtonEditPaciente.value = true
   };
 
+
   const mostrarTratamientos = async (pacienteId: any) => 
   {
       await authApi.get(`api/base/search/obtenerTratamientos/${pacienteId}`).then(res =>
@@ -792,24 +797,26 @@
     info.value.direccion     = paciente.value.direccion
     info.value.localidad     = paciente.value.localidad
     info.value.telefono      = paciente.value.telefono
+    info.value.medico = medico.value.med_nombre
     info.value.sintoma     = keys.value.sintoma.toUpperCase()
     info.value.observacion   = keys.value.observacion.toUpperCase()
     info.value.detalle = keys.value.detalle.toUpperCase()
 
-    // printServicio()
+    console.log(info.value);
   };
 
-  const printServicio = async () => 
-  {
-    //   const res:TDocumentDefinitions = await servicioStore.configReportPrint(info.value);
-  
-    //   const win = window.open('', '_blank', 'width=800,height=600,top=85,left=50');
-      
-    //    if (win) {
-    //        pdfMake.createPdf(res).print({}, win);
-    //    };
-  
-  };
+//   const printServicio = async () => {
+//   try {
+//     const res = await useCitaStore.configReportPrint(info.value);
+//     const win = window.open('', '_blank', 'width=800,height=600,top=85,left=50');
+//     if (win) {
+//       pdfMake.createPdf(res).print({}, win);
+//     }
+//   } catch (error) {
+//     console.error('Error al generar el reporte:', error);
+//   }
+// };
+
 
   const limpiarDatos = async () => 
   {

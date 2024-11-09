@@ -33,3 +33,18 @@ export interface rsTratamiento
   idTratamiento?: number;
   nombreTramiento?: string;
 }
+
+export interface CitaInfo {
+  noCita: string;
+  fechaCreacion: string;
+  tipo: string;
+  paciente: string;
+  cedula: string;
+  direccion: string;
+  localidad: string;
+  telefono: string;
+  detalle: string;
+  sintoma: string;
+  observacion: string;
+  medico: string;
+}
