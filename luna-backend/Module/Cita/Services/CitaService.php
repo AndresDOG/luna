@@ -38,4 +38,14 @@ class CitaService implements CitaServiceInterface
     {
         return $this->repository->pdoCambiarEstado($request);
     }
-}    
+
+    public function setActualizarCita($request, $id)
+    {
+        return $this->repository->pdoActualizarCita($request,$id);
+    }
+
+    public function getConsultaSimple($request)
+    {
+        return $this->repository->pdoConsultaSimple($request);
+    }
+}   

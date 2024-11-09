@@ -69,7 +69,7 @@ class RolRepository implements RolRepositoryInterface
             $rs->delete();
 
         } catch (\Exception $e) {
-            return 0;
+            return $e;
         }
 
         return 1;

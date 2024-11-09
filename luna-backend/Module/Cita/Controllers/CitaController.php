@@ -39,4 +39,15 @@ class CitaController extends Controller
     {
         return $this->service->setCambiarEstado($request);
     }
+
+
+    public function actualizarCita(Request $request, $id)
+    {
+        return $this->service->setActualizarCita($request,$id);
+    }
+
+    public function consultaSimple(Request $request)
+    {
+        return $this->service->getConsultaSimple($request);
+    }
 }

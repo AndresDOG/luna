@@ -104,14 +104,14 @@
                           class="ma-1"
                           color="gray"
                           label
-                          @click="modificarServicio"
+                          @click="modificarCita"
                           size="small"
                           variant="elevated"
                           prepend-icon="mdi mdi-note-plus">
                           <template v-slot:prepend>
                             <v-icon color="green"></v-icon>
                           </template>
-                          MODIFICAR SERVICIO
+                          MODIFICAR CITA
                       </v-btn>
 
                       <v-btn
@@ -197,7 +197,7 @@
   onMounted(async () => 
   {
       //await ControlPermiso()
-      
+      await getTipoCita()
       await getCita()
   });
       // Watcher para date
@@ -211,13 +211,13 @@
   // Router
   const goToVolver = () => 
   {
-    props.accion === 1 ? router.push({name:'service.view',params:{id_cita: props.id_cita}}) : router.push({name:'consulta.simple'}) 
+    props.accion === 1 ? router.push({name:'cita.view',params:{id_cita: props.id_cita}}) : router.push({name:'consulta.simple'}) 
   }
 
   
   const getTipoCita = async () =>
   {
-    authApi.get('api/servicio/search/tipoCita').then((res) =>
+    authApi.get('api/cita/info/tipoCita').then((res) =>
     {
         listTiposCitas.value = res.data;
     });
@@ -244,7 +244,11 @@
         keys.value.fechaCreacion = rs.created_at;
         keys.value.fechaEstado = rs.cita_fecha;
         keys.value.estado  = rs.estado_cita.estado_nombre;
-        keys.value.tipo  = rs.tipo_cita.tip_cita_nombre;
+        keys.value.tipo = 
+        {
+          tip_cita_id: rs.tipo_cita.tip_cita_id,
+          tip_cita_nombre: rs.tipo_cita.tip_cita_nombre
+        };
         keys.value.id_estado  = rs.estado_cita.estado_id;
 
         keys.value.medico  = rs.medico.med_nombre;
@@ -267,31 +271,48 @@
     })
   };
 
-  const modificarServicio = async () =>
+  const modificarCita = async () => 
   {
-    const isValid = await form_main.value?.validate()
+      const isValid = await form_main.value?.validate();
 
-    if(isValid.valid)
-    {
-      const params = {keys:keys.value}
-      await authApi.put(`api/servicio/servicio/${props.id_cita}`,params).then(res =>
-      {
+      if (isValid.valid) {
+        // Asegúrate de que tipo sea un objeto válido antes de enviar
+        let tipoId = keys.value.tipo?.tip_cita_id;
         
-        if (res.data === 0) 
-        {
-          Swal.fire("Oops!", "Ocurrio un error al modificar el registro, verifique los datos", "error")
+        // Si no se ha cambiado el tipo, revisa si ya tiene un id asignado
+        if (!tipoId && typeof keys.value.tipo === 'string') {
+          const tipoEncontrado = listTiposCitas.value.find(
+            (item) => item.tip_cita_nombre === keys.value.tipo
+          );
+          tipoId = tipoEncontrado ? tipoEncontrado.tip_cita_id : null;
         }
-        else
-        {
-            Swal.fire("Ok", "Registro modificado con éxito", "success")
-            if(props.accion == 1)
-            {
-                router.push({name:'service.view',params:{id_cita: props.id_cita}});
+
+        // Si no se encuentra un tipo válido, mostrar un mensaje
+        if (!tipoId) {
+          Swal.fire("Oops!", "Debe seleccionar un tipo de cita válido", "error");
+          return;
+        }
+
+        const params = {
+          detalle: keys.value.detalle,
+          sintoma: keys.value.sintoma,
+          observacion: keys.value.observacion,
+          tipo: tipoId
+        };
+
+        await authApi.post(`api/cita/process/actualizarCita/${props.id_cita}`, params).then((res) => {
+          if (res.data === 0) {
+            Swal.fire("Oops!", "Ocurrió un error al modificar el registro, verifique los datos", "error");
+          } else {
+            Swal.fire("Ok", "Registro modificado con éxito", "success");
+            if (props.accion == 1) {
+              router.push({ name: 'cita.view', params: { id_cita: props.id_cita } });
             }
-        }
-      })
-    }
-  };
+          }
+        });
+      }
+    };
+
 
   const formatDate = (date:any) =>
   {

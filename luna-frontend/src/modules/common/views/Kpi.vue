@@ -82,8 +82,10 @@
                 <v-chip size="small" color="red" variant="outlined">{{ value }}</v-chip>
               </template>
 
-              <template v-slot:item.estado_nombre="{ value }">
-                <v-chip size="small" :color="eventColor(value)" variant="outlined">{{ value }}</v-chip>
+              <template v-slot:item.estado_nombre="{ item }">
+                <v-chip size="small" :color="eventColor(item.estado_id)" variant="outlined">
+                  {{ item.estado_nombre }}
+                </v-chip>
               </template>
 
               <template v-slot:item.idaccion="{ item }: { item: any }">
@@ -209,11 +211,10 @@
 
     function eventColor(estado: number): string 
     {
-      if (estado === 2) return 'red';
-      else if (estado === 3) return 'pink';
-      else if (estado === 4) return 'indigo';
-      else if (estado === 5) return 'green';
-      else if (estado === 12) return 'cyan lighten-2';
+      if (estado === 1) return 'blue';
+      else if (estado === 4) return 'pink';
+      else if (estado === 3) return 'green';
+      else if (estado === 5) return 'red';
       else return 'blue';
     }
 

@@ -66,7 +66,8 @@ class CitaRepository implements CitaRepositoryInterface
                 'A.cita_fecha',
                 'B.med_nombre',
                 'C.pac_nombre',
-                'E.estado_nombre'
+                'E.estado_nombre',
+                'E.estado_id',
             )
             ->join('medico as B', 'B.med_id', '=', 'A.cita_medico_id')
             ->join('paciente as C', 'C.pac_id', '=', 'A.cita_paciente_id')
@@ -79,18 +80,26 @@ class CitaRepository implements CitaRepositoryInterface
             $resultados = $citas->get();
         }
         // Caso 2: Si el rol del usuario es 4, se filtran las citas del médico asociado al usuario
-        elseif ($usuarioIdRol == 4) {
+        elseif ($usuarioIdRol == 4) 
+        {
+            // Filtrar por citas del médico asociado y estado_id 1 o 3
             $citas->where('A.cita_medico_id', function($query) use ($usuarioId) {
                 $query->select('med_id')
                       ->from('medico')
                       ->where('med_usuario_id', $usuarioId);
             });
-
+            $citas->whereIn('E.estado_id', [1, 3]); // Filtrar estado_id 1 o 3
+            $resultados = $citas->get();
+        }
+        // Caso 3: Para todos los roles diferentes de 1, filtrar solo citas con estado_id 1 o 3
+        else {
+            $citas->whereIn('E.estado_id', [1, 3]);
             $resultados = $citas->get();
         }
 
         return response()->json($resultados);
     }
+
 
     public function pdoCitaPaci($id)
     {
@@ -101,7 +110,8 @@ class CitaRepository implements CitaRepositoryInterface
                 'A.cita_fecha',
                 'B.med_nombre',
                 'C.pac_nombre',
-                'E.estado_nombre'
+                'E.estado_nombre',
+                'E.estado_id',
             )
             ->join('medico as B', 'B.med_id', '=', 'A.cita_medico_id')
             ->join('paciente as C', 'C.pac_id', '=', 'A.cita_paciente_id')
@@ -136,5 +146,75 @@ class CitaRepository implements CitaRepositoryInterface
 
         return 1;
     }
+
+    public function pdoActualizarCita($request, $id)
+    {
+        \DB::beginTransaction();
+        try 
+        {
+            // Buscar la cita por ID
+            $cita = $this->model->find($id);
+            
+            if (!$cita) {
+                throw new \Exception('Cita no encontrada');
+            }
+            
+            // Actualizar los campos específicos directamente, aplicando strtoupper()
+            $cita->cita_id_tipo_cita = $request->tipo;
+            $cita->cita_observacion = strtoupper($request->observacion);
+            $cita->cita_sintoma = strtoupper($request->sintoma);
+            $cita->cita_detalle = strtoupper($request->detalle);
+            
+            $cita->save();
+            
+            \DB::commit();
+            return 1;
+        } 
+        catch (\Exception $e) 
+        {
+            \DB::rollback();
+            return 0;
+        }
+    }
+
+    public function pdoConsultaSimple($request)
+    {
+        // Obtener los parámetros directamente desde el request
+        $parametro = $request->parametro;
+        $criterio = $request->criterio;
+
+        // Iniciar la consulta en la tabla Cita
+        $rs = DB::table('cita')
+            ->leftJoin('paciente as a', 'cita.cita_paciente_id', '=', 'a.pac_id')
+            ->leftJoin('medico as m', 'cita.cita_medico_id', '=', 'm.med_id') // Join con la tabla medico
+            ->leftJoin('tipo_cita as t', 'cita.cita_id_tipo_cita', '=', 't.tip_cita_id') // Join con la tabla tipo_cita
+            ->leftJoin('estado_cita as e', 'cita.estado_id', '=', 'e.estado_id') // Join con la tabla estado_cita
+            ->select('cita.*', 'a.pac_nombre', 'a.pac_cedula', 'a.pac_telefono', 
+                     'm.med_nombre', 't.tip_cita_nombre', 'e.estado_nombre'); // Seleccionar las columnas deseadas
+
+        // Aplicar el filtro según el criterio
+        if ($criterio == 1) {
+            $rs->where('a.pac_cedula', $parametro);
+        } elseif ($criterio == 2) {
+            $rs->where('a.pac_nombre', 'like', '%' . strtoupper($parametro) . '%');
+        } elseif ($criterio == 3) {
+            $rs->where('a.pac_telefono', 'like', '%' . $parametro . '%');
+        } elseif ($criterio == 4) {
+            $rs->where('cita.cit_no_cita', $parametro); // Criterio 4 para buscar por no_cita
+        }
+
+        // Ejecutar la consulta y obtener los resultados
+        $result = $rs->get();
+
+        // Retornar 0 si no se encuentran resultados
+        if ($result->isEmpty()) {
+            return 0;
+        }
+
+        // Retornar los resultados encontrados
+        return $result;
+    }
+
+
 
 }

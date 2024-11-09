@@ -19,6 +19,11 @@ const citaRoutes: Array<RouteRecordRaw> =
         component: () =>import('@/modules/cita/views/Edit.vue'),
         props: route => ({accion: route.params.accion, id_cita: route.params.id_cita}),
     },
+    {
+        name: 'consulta.simple',
+        path: '/consulta/simple',
+        component: () =>import('@/modules/cita/views/Consulta/Simple.vue'),
+    },
 ];
 
 export default citaRoutes;

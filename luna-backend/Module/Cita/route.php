@@ -27,11 +27,13 @@ Route::prefix('cita')->middleware(['auth:sanctum'])->group(function ()
     {
         Route::get('obtenerCitasAsign', [CitaController::class, 'obtenerCitasAsign']);
         Route::post('cambiarEstado', [CitaController::class, 'cambiarEstado']);
+        Route::post('actualizarCita/{id}', [CitaController::class, 'actualizarCita']);
     });
 
     Route::prefix('info')->group(function ()
     {
         Route::get('tipoCita', [ListaController::class, 'tipoCita']);
+        Route::post('consultaSimple', [CitaController::class, 'consultaSimple']);
     });    
 
     Route::prefix('search')->group(function ()

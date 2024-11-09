@@ -142,7 +142,7 @@
                                 </template>
                                </v-tooltip>
 
-                               <v-tooltip location="top" text="Crear Cliente">
+                               <v-tooltip location="top" text="Crear Paciente">
                                 <template v-slot:activator="{ props}"> 
                                   <v-icon v-bind="props"  color="pink" @click="ModNewPacientee" >mdi-plus-box-multiple</v-icon>
                                 </template>
@@ -667,7 +667,7 @@
 
     if(isValid.valid)
     {
-      const params = {keys:addPaciente}
+      const params = {keys:addPaciente.value}
       await authApi.post('api/base/cliente',params).then(res =>
       {
         if (res.data === 0) 

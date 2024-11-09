@@ -29,6 +29,7 @@
             </v-toolbar>
             <v-card-actions>
               <v-chip
+              v-if="access_cequipo"
                 class="ma-2"
                 color="pink"
                 label
@@ -54,14 +55,14 @@
                 </div>
               </template>
               <template v-slot:item.actions="{ item }">
-                <v-tooltip top>
+                <v-tooltip v-if="access_eequipo" top>
                   <template v-slot:activator="{ props }">
                     <v-icon v-bind="props" color="blue-grey" @click="openDialog('edit', item)">mdi-pencil</v-icon>
                   </template>
                   <span>Editar Equipo</span>
                 </v-tooltip>
                 <span class="mx-1"></span>
-                <v-tooltip top>
+                <v-tooltip v-if="access_dequipo" top>
                   <template v-slot:activator="{ props }">
                     <v-icon v-bind="props" color="pink" @click="deleteEquipo(item.equi_id)">mdi-trash-can</v-icon>
                   </template>
@@ -151,18 +152,29 @@
               :items-per-page="5"
               class="elevation-1">
               <template v-slot:item.actions="{ item }">
-                <v-tooltip top>
+                <v-chip
+                :color="getChipColor(calculateDaysDifference(item.mant_fecha))"
+                size="small"
+                label
+                class="ma-2"
+              >
+                <v-icon left>
+                  mdi-calendar-clock
+                </v-icon>
+                {{ calculateDaysDifference(item.mant_fecha) }} días
+              </v-chip>
+                <v-tooltip v-if="access_emantenimiento" top>
                   <template v-slot:activator="{ props }">
                     <v-icon v-bind="props" color="blue-grey" @click="openMaintenanceDialog('edit', item)">mdi-pencil</v-icon>
                   </template>
-                  <span>Editar Equipo</span>
+                  <span>Editar Mantenimiento</span>
                 </v-tooltip>
                 <span class="mx-1"></span>
-                <v-tooltip top>
+                <v-tooltip v-if="access_emantenimiento" top>
                   <template v-slot:activator="{ props }">
                     <v-icon v-bind="props" color="pink" @click="deleteMantenimiento(item.mant_id)">mdi-trash-can</v-icon>
                   </template>
-                  <span>Eliminar Equipo</span>
+                  <span>Eliminar Mantenimiento</span>
                 </v-tooltip>
               </template>
             </v-data-table>
@@ -232,6 +244,8 @@
   import { ref, onMounted, watch } from 'vue';
   import authApi from '@/api/api';
   import type { Header } from '@/modules/common/types/index';
+  import { AuthStore } from '@/modules/common/stores/auth';
+  import type { AuthStoreState } from '@/modules/common/types/index';
   import Swal from 'sweetalert2';
   
   // Headers for the data tables
@@ -274,6 +288,15 @@
   let nRules = [
     (v: string): boolean | string => !!v || 'Requerido'
   ];
+  // Validacion y Reglas
+  const authStore = AuthStore() as AuthStoreState;
+  const accessAdmin = ref<boolean>(false);
+  const access_cequipo = ref<boolean>(false);
+  const access_eequipo = ref<boolean>(false);
+  const  access_dequipo = ref<boolean>(false);
+  const access_cmantenimiento = ref<boolean>(false);
+  const access_emantenimiento = ref<boolean>(false);
+  const  access_dmantenimiento = ref<boolean>(false);
   
   // Datapicker
   const date1 = ref(new Date());
@@ -302,6 +325,14 @@
     } catch (error) {
       console.error('Error fetching mantenimientos:', error);
     }
+  };
+
+  const calculateDaysDifference = (fecha: string): number => 
+  {
+    const mantenimientoFecha = new Date(fecha);
+    const today = new Date();
+    const diffTime = today.getTime() - mantenimientoFecha.getTime();
+    return Math.floor(diffTime / (1000 * 3600 * 24)); // Convertir la diferencia en días
   };
   
   // Open dialog methods
@@ -385,6 +416,12 @@
     }
     closeMaintenanceDialog();
   };
+
+  const getChipColor = (days: number) => {
+  if (days < 15) return 'green';     // Menos de 15 días - verde
+  if (days >= 15 && days < 30) return 'yellow'; // Entre 15 y 30 días - amarillo
+  return 'red';  // 30 o más días - rojo
+};
   
   // Delete methods
   const deleteEquipo = async (id: any) => {
@@ -406,9 +443,10 @@
   };
   
   // Lifecycle hooks
-  onMounted(() => {
-    fetchEquipos();
-    fetchMantenimientos();
+  onMounted( async () => {
+    await controlPermiso();
+    await fetchEquipos();
+    await fetchMantenimientos();
   });
   
   // Format date function (add your implementation)
@@ -419,6 +457,25 @@
     const day = String(newDate.getDate()).padStart(2, '0')
     return `${year}-${month}-${day}`
 }
+
+const controlPermiso = () =>
+    {
+    
+        const componente17 = authStore.permisos.find((p:any) => p.per_id_componente === 17);
+        if(componente17)
+        {
+            const rs =  JSON.parse(componente17.per_acceso);
+
+            access_cequipo.value = rs.Crear_Equipo === "1" ? true : false;
+            access_eequipo.value = rs.Editar_Equipo === "1" ? true : false;
+            access_dequipo.value = rs.Eliminar_Equipo === "1" ? true : false;
+            access_cmantenimiento.value = rs.Crear_Mantenimiento === "1" ? true : false;
+            access_emantenimiento.value = rs.Editar_Mantenimiento === "1" ? true : false;
+            access_dmantenimiento.value = rs.Eliminar_Mantenimiento === "1" ? true : false;
+            
+        }
+
+    }
   </script>
   
   <style scoped>

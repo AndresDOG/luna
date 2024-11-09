@@ -143,7 +143,7 @@
                             </v-tooltip>
                             <span class="mx-1"></span>
                             <v-tooltip top>
-                                <template v-slot:activator="{ props }">
+                                <template v-if="access_vtratamiento" v-slot:activator="{ props }">
                                     <v-icon  v-bind="props" density="compact" color="red" @click="mostrarTratamientos(item.pac_id)">mdi mdi-clipboard-list-outline</v-icon>
                                 </template>
                                 <span>Ver Tratamientos</span>
@@ -388,6 +388,7 @@ import { log } from 'console';
     const accessAdmin = ref<boolean>(false);
     const access_vpaciente = ref<boolean>(false);
     const access_ctratamiento = ref<boolean>(false);
+    const  access_vtratamiento = ref<boolean>(false);
 
     let valid:boolean = true;
     let nRules = 
@@ -547,6 +548,7 @@ import { log } from 'console';
 
             access_vpaciente.value = rs.Ver_Paciente === "1" ? true : false;
             access_ctratamiento.value = rs.Asignar_Tratamiento === "1" ? true : false;
+            access_vtratamiento.value = rs.Ver_Tratamientos === "1" ? true : false;
             
         }
 

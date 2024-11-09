@@ -52,7 +52,8 @@ const commonRoutes: Array<RouteRecordRaw> =
         name: 'common.equipo',
         path: '/common/equipo',
         component: () =>import('@/modules/common/views/Equipo.vue')
-    }
+    },
+    
     
 ];
 

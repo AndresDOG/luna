@@ -112,7 +112,7 @@
                                     density="compact"
                                     variant="underlined">
                                     <template v-slot:append>
-                                        <v-tooltip text="Cambiar Estado" location="top">
+                                        <v-tooltip v-if="info.id_estado !== 4 && info.id_estado !== 5" text="Cambiar Estado" location="top">
                                             <template v-slot:activator="{ props }">
                                                 <v-icon
                                                     v-bind="props"
@@ -344,6 +344,7 @@
     }>();
 
     import { ref, onMounted, watch, isVNode,computed } from 'vue';
+    import { format } from 'date-fns';
     import { nextTick } from 'vue'
     import { AuthStore } from '@/modules/common/stores/auth';
     import type { AuthStoreState } from '@/modules/common/types/index';
@@ -445,6 +446,7 @@
         
     });
 
+
     // Props Rutas
     const goToEditCita = () => 
     {
@@ -496,7 +498,7 @@
             {     
                 console.log(res.data);             
                  info.value.noCita   = rs.cit_no_cita; 
-                 info.value.fechaCreacion = rs.created_at;
+                 info.value.fechaCreacion = format(new Date(rs.created_at),'yyyy-MM-dd HH:mm:ss');
                  info.value.fechaEstado = rs.cita_fecha;
                  info.value.estado  = rs.estado_cita.estado_nombre;
                  info.value.tipo  = rs.tipo_cita.tip_cita_nombre;
@@ -662,6 +664,14 @@
         await authApi.get('api/base/medico').then(res => {
             medico.value = res.data
         });
+    };
+
+    const formatDate = (date:any) =>
+    {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${year}/${month}/${day}`
     };
 
     const controlPermiso = () => 
