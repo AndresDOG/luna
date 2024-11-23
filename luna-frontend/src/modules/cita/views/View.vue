@@ -149,6 +149,26 @@
                                     variant="underlined">
                                 </v-text-field>
                             </v-col>
+                            <v-col cols="12" md="4">
+                                <v-text-field                                        
+                                    v-model="fechaNacimiento"
+                                    bg-color="grey-lighten-4"
+                                    label="Fecha Nacimiento"
+                                    readonly                                        
+                                    density="compact"
+                                    variant="underlined">
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="4">
+                                <v-text-field                                        
+                                    v-model="age"
+                                    bg-color="grey-lighten-4"
+                                    label="Edad"
+                                    readonly                                        
+                                    density="compact"
+                                    variant="underlined">
+                                </v-text-field>
+                            </v-col>
                         </v-row>
                         <v-row class="pb-0 mt-0">
                             <v-col cols="12" md="8">
@@ -365,6 +385,7 @@
 
     const info = ref<rsInfo>({ noCita:'', fechaCreacion:'', fechaEstado:'',tipo:'',medico:'',id_estado:'', estado:'', paciente:'', idPaciente:'', cedula:'', direccion:'', mail:'', telefono:'', localidad:'',lugar:'',observacion:'',cedulaMedico:'',detalle:'',sintoma:''})
     const rsMessage =  ref('');
+    const fechaNacimiento= ref<any>();
     const rsNotas = ref<any>([]); 
     const textNota = ref('');
     const notaPublica = ref(1);
@@ -500,6 +521,7 @@
                  info.value.noCita   = rs.cit_no_cita; 
                  info.value.fechaCreacion = format(new Date(rs.created_at),'yyyy-MM-dd HH:mm:ss');
                  info.value.fechaEstado = rs.cita_fecha;
+                 fechaNacimiento.value = rs.paciente.pac_fecha_nacimiento;
                  info.value.estado  = rs.estado_cita.estado_nombre;
                  info.value.tipo  = rs.tipo_cita.tip_cita_nombre;
                  info.value.id_estado  = rs.estado_cita.estado_id;
@@ -537,6 +559,20 @@
             }    
         });       
     };
+
+    const age = computed(() => {
+    const birthDate = new Date(fechaNacimiento.value)
+    const today = new Date()
+    
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const monthDiff = today.getMonth() - birthDate.getMonth()
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--
+    }
+  
+  return age
+})
 
     const asignarTecnico = async () => 
     {
